@@ -1,0 +1,42 @@
+version: "3.7"
+
+services:
+  #Mysql Container
+  glpi-database:
+    image: mysql:5.7.36
+    container_name: glpi-database
+    volumes:
+      - mysql-vol:/var/lib/mysql
+      - ./sql:/docker-entrypoint-initdb.d
+    environment:
+      MYSQL_ROOT_PASSWORD: jucarino123
+      MYSQL_PASSWORD: jucarino123
+    ports:
+      - "3306:3306"
+    restart: always
+    networks:
+      - glpi-network
+
+  #GLPI Container
+  glpi:
+    build:
+      context: .
+    container_name: glpi
+    ports:
+      - "8080:80"
+    restart: always
+    networks:
+      - glpi-network
+
+  adminer:
+    image: adminer:latest
+    ports:
+      - "9000:8080"
+    networks:
+      - glpi-network
+
+networks:
+  glpi-network:
+
+volumes:
+  mysql-vol:
